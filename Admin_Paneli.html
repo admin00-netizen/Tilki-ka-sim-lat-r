@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/FtEej2Equ4UlBnxEh723dOf9HdoFQwvm/2d7ea056-505b-4dd9-8bde-64e846a0e850/files/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦊 Tilki Kaçışı - Admin Paneli</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;background:#0d1117;color:#c9d1d9;min-height:100vh;}
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.login-box{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:40px;width:360px;text-align:center;}
+.login-box h1{color:#FF6600;font-size:28px;margin-bottom:5px;}
+.login-box p{color:#8b949e;margin-bottom:25px;}
+input{width:100%;padding:10px 14px;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#c9d1d9;font-size:15px;margin-bottom:12px;outline:none;}
+input:focus{border-color:#FF6600;}
+.btn{padding:10px 24px;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold;transition:all 0.2s;}
+.btn-primary{background:#FF6600;color:#fff;width:100%;}
+.btn-primary:hover{background:#e55a00;}
+.btn-sm{padding:6px 14px;font-size:12px;}
+.btn-green{background:#238636;color:#fff;}
+.btn-red{background:#da3633;color:#fff;}
+.btn-blue{background:#1f6feb;color:#fff;}
+.header{background:#161b22;border-bottom:1px solid #30363d;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
+.header h1{color:#FF6600;font-size:22px;}
+.nav{display:flex;gap:8px;}
+.nav button{background:rgba(255,255,255,0.05);color:#8b949e;border:1px solid #30363d;border-radius:6px;padding:6px 16px;cursor:pointer;font-size:13px;}
+.nav button.active,.nav button:hover{background:#FF6600;color:#fff;border-color:#FF6600;}
+.main{padding:24px;max-width:1200px;margin:0 auto;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px;}
+.stat-card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:20px;text-align:center;}
+.stat-val{font-size:32px;font-weight:bold;color:#FF6600;}
+.stat-lbl{font-size:13px;color:#8b949e;margin-top:4px;}
+.table-wrap{background:#161b22;border:1px solid #30363d;border-radius:10px;overflow:hidden;}
+.table-head{padding:16px 20px;border-bottom:1px solid #30363d;display:flex;justify-content:space-between;align-items:center;}
+.table-head h2{font-size:16px;color:#e6edf3;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid #21262d;font-size:13px;}
+th{color:#8b949e;font-weight:600;background:#0d1117;}
+tr:hover td{background:rgba(255,255,255,0.03);}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold;}
+.badge-score{background:rgba(255,102,0,0.2);color:#FF6600;}
+.badge-eggs{background:rgba(255,215,0,0.2);color:#FFD700;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:100;}
+.modal{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:28px;width:min(500px,95vw);max-height:85vh;overflow-y:auto;}
+.modal h2{color:#e6edf3;margin-bottom:16px;}
+.modal-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #21262d;font-size:13px;}
+.modal-row span:first-child{color:#8b949e;}
+.error{color:#f85149;background:rgba(248,81,73,0.1);padding:10px;border-radius:6px;margin-bottom:12px;}
+#toast{position:fixed;bottom:24px;right:24px;background:#238636;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;opacity:0;transition:opacity 0.3s;z-index:200;}
+</style>
+</head>
+<body>
+
+<div id="loginWrap" class="login-wrap">
+  <div class="login-box">
+    <h1>🦊 Admin Paneli</h1>
+    <p>Tilki Kaçışı Yönetim Sistemi</p>
+    <div id="loginError" class="error" style="display:none;"></div>
+    <input type="password" id="adminPass" placeholder="Admin Şifresini Gir..." onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="btn btn-primary" onclick="adminLogin()">GİRİŞ YAP →</button>
+  </div>
+</div>
+
+<div id="adminPanel" style="display:none;">
+  <div class="header">
+    <h1>🦊 Tilki Kaçışı Admin</h1>
+    <div class="nav">
+      <button class="active" onclick="showTab('dashboard',this)">📊 Dashboard</button>
+      <button onclick="showTab('users',this)">👥 Kullanıcılar</button>
+      <button onclick="showTab('scores',this)">🏆 Skorlar</button>
+      <button onclick="adminLogout()">🚪 Çıkış</button>
+    </div>
+  </div>
+  <div class="main">
+    <!-- Dashboard -->
+    <div id="tab-dashboard">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="stat-val">-</div><div class="stat-lbl">Toplam Oyuncu</div></div>
+        <div class="stat-card"><div class="stat-val">-</div><div class="stat-lbl">Toplam Oyun</div></div>
+        <div class="stat-card"><div class="stat-val">-</div><div class="stat-lbl">En Yüksek Skor</div></div>
+        <div class="stat-card"><div class="stat-val">-</div><div class="stat-lbl">Toplam Yumurta</div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-head"><h2>🏆 Top 10 Oyuncu</h2><button class="btn btn-sm btn-blue" onclick="loadStats()">🔄 Yenile</button></div>
+        <table>
+          <thead><tr><th>#</th><th>Kullanıcı</th><th>Skor</th><th>Yumurta</th><th>Karakter</th><th>İşlem</th></tr></thead>
+          <tbody id="top10Body"></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Users -->
+    <div id="tab-users" style="display:none;">
+      <div class="table-wrap">
+        <div class="table-head">
+          <h2>👥 Tüm Kullanıcılar</h2>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="userSearch" placeholder="Ara..." style="width:160px;margin:0;" oninput="filterUsers()">
+            <button class="btn btn-sm btn-blue" onclick="loadUsers()">🔄 Yenile</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>ID</th><th>Kullanıcı Adı</th><th>Yaş</th><th>En Yüksek</th><th>Yumurta</th><th>Kayıt</th><th>İşlem</th></tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Scores -->
+    <div id="tab-scores" style="display:none;">
+      <div class="table-wrap">
+        <div class="table-head">
+          <h2>🎮 Son Oynanışlar</h2>
+          <button class="btn btn-sm btn-blue" onclick="loadScores()">🔄 Yenile</button>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Kullanıcı</th><th>Skor</th><th>Yumurta</th><th>Tarih</th></tr></thead>
+          <tbody id="scoresBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- User Modal -->
+<div id="userModal" class="modal-bg" style="display:none;">
+  <div class="modal">
+    <h2 id="modalTitle">Kullanıcı Detayı</h2>
+    <div id="modalContent"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+      <button class="btn btn-sm btn-green" onclick="giveEggs()">🥚 Yumurta Ver</button>
+      <button class="btn btn-sm btn-blue" onclick="resetScore()">🔄 Skor Sıfırla</button>
+      <button class="btn btn-sm btn-red" onclick="deleteUser()">🗑️ Sil</button>
+      <button class="btn btn-sm" style="background:#30363d;color:#c9d1d9;" onclick="closeModal()">✖ Kapat</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+let adminPass = '';
+let allUsers = [];
+let selectedUserId = null;
+
+function adminLogin(){
+  adminPass = document.getElementById('adminPass').value;
+  if(!adminPass){ showLoginError('Şifre gir!'); return; }
+  fetch('/api/admin/stats',{headers:{'x-admin-password':adminPass}})
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.error){ showLoginError('Hatalı şifre!'); return; }
+      document.getElementById('loginWrap').style.display='none';
+      document.getElementById('adminPanel').style.display='block';
+      loadStats(); loadUsers(); loadScores();
+    }).catch(()=>showLoginError('Sunucuya bağlanılamadı!'));
+}
+document.getElementById('adminPass').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
+
+function showLoginError(msg){
+  const el=document.getElementById('loginError');
+  el.textContent=msg; el.style.display='block';
+}
+function adminLogout(){
+  adminPass='';
+  document.getElementById('loginWrap').style.display='flex';
+  document.getElementById('adminPanel').style.display='none';
+}
+
+function showTab(tab,btn){
+  ['dashboard','users','scores'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+async function loadStats(){
+  const [stats,lb]=await Promise.all([
+    fetch('/api/admin/stats',{headers:{'x-admin-password':adminPass}}).then(r=>r.json()),
+    fetch('/api/leaderboard').then(r=>r.json())
+  ]);
+  const cards=document.querySelectorAll('#statsGrid .stat-card .stat-val');
+  if(cards[0]) cards[0].textContent=stats.totalUsers||0;
+  if(cards[1]) cards[1].textContent=stats.totalGames||0;
+  if(cards[2]) cards[2].textContent=(stats.topScore||0)+'m';
+  if(cards[3]) cards[3].textContent=stats.totalEggsEver||0;
+  // Top 10
+  const tbody=document.getElementById('top10Body');
+  tbody.innerHTML=(lb.leaderboard||[]).slice(0,10).map((u,i)=>`<tr>
+    <td>${i+1}</td>
+    <td><strong>${u.username}</strong></td>
+    <td><span class="badge badge-score">${u.high_score}m</span></td>
+    <td><span class="badge badge-eggs">🥚 ${u.total_eggs}</span></td>
+    <td>${u.selected_character||'-'}</td>
+    <td><button class="btn btn-sm btn-blue" onclick="openUserByName('${u.username}')">Detay</button></td>
+  </tr>`).join('');
+}
+
+async function loadUsers(){
+  const d=await fetch('/api/admin/users',{headers:{'x-admin-password':adminPass}}).then(r=>r.json());
+  allUsers=d.users||[];
+  renderUsers(allUsers);
+}
+
+function filterUsers(){
+  const q=document.getElementById('userSearch').value.toLowerCase();
+  renderUsers(allUsers.filter(u=>u.username.toLowerCase().includes(q)));
+}
+
+function renderUsers(users){
+  document.getElementById('usersBody').innerHTML=users.map(u=>`<tr>
+    <td>${u.id}</td>
+    <td><strong>${u.username}</strong></td>
+    <td>${u.age||'-'}</td>
+    <td><span class="badge badge-score">${u.high_score}m</span></td>
+    <td><span class="badge badge-eggs">🥚 ${u.total_eggs}</span></td>
+    <td style="font-size:11px;color:#8b949e;">${(u.created_at||'').slice(0,10)}</td>
+    <td><button class="btn btn-sm btn-blue" onclick="openUser(${u.id})">Detay</button></td>
+  </tr>`).join('');
+}
+
+async function loadScores(){
+  const d=await fetch('/api/admin/recent-scores',{headers:{'x-admin-password':adminPass}}).then(r=>r.json());
+  document.getElementById('scoresBody').innerHTML=(d.scores||[]).map((s,i)=>`<tr>
+    <td>${i+1}</td>
+    <td>${s.username}</td>
+    <td><span class="badge badge-score">${s.score}m</span></td>
+    <td><span class="badge badge-eggs">🥚 ${s.eggs_collected||0}</span></td>
+    <td style="font-size:11px;color:#8b949e;">${(s.played_at||'').slice(0,16)}</td>
+  </tr>`).join('');
+}
+
+async function openUser(id){
+  selectedUserId=id;
+  const d=await fetch('/api/admin/user/'+id,{headers:{'x-admin-password':adminPass}}).then(r=>r.json());
+  const u=d.user;
+  document.getElementById('modalTitle').textContent='👤 '+u.username;
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-row"><span>ID</span><span>${u.id}</span></div>
+    <div class="modal-row"><span>Kullanıcı Adı</span><span><strong>${u.username}</strong></span></div>
+    <div class="modal-row"><span>Yaş</span><span>${u.age||'-'}</span></div>
+    <div class="modal-row"><span>En Yüksek Skor</span><span><strong>${u.high_score}m</strong></span></div>
+    <div class="modal-row"><span>Toplam Yumurta</span><span>🥚 <strong>${u.total_eggs}</strong></span></div>
+    <div class="modal-row"><span>Seçili Karakter</span><span>${u.selected_character||'-'}</span></div>
+    <div class="modal-row"><span>Seçili Kostüm</span><span>${u.selected_costume||'-'}</span></div>
+    <div class="modal-row"><span>Günlük Ödül Günü</span><span>Gün ${u.daily_reward_day}</span></div>
+    <div class="modal-row"><span>Son Ödül</span><span>${u.last_daily_claim||'Hiç almadı'}</span></div>
+    <div class="modal-row"><span>Kayıt Tarihi</span><span>${(u.created_at||'').slice(0,16)}</span></div>
+    <hr style="border-color:#30363d;margin:12px 0;">
+    <div style="font-size:13px;color:#8b949e;margin-bottom:8px;">Son 20 Oyun:</div>
+    ${(d.scores||[]).slice(0,5).map(s=>`<div class="modal-row"><span>${(s.played_at||'').slice(0,10)}</span><span>${s.score}m &nbsp; 🥚${s.eggs_collected}</span></div>`).join('')||'<div style="color:#8b949e;font-size:12px;">Oyun yok</div>'}
+    <hr style="border-color:#30363d;margin:12px 0;">
+    <div style="font-size:13px;color:#8b949e;margin-bottom:8px;">Sahip Olunan (${(d.items||[]).length} öğe)</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">${(d.items||[]).map(i=>`<span class="badge" style="background:#30363d;color:#c9d1d9;">${i.item_type}: ${i.item_id}</span>`).join('')}</div>
+  `;
+  document.getElementById('userModal').style.display='flex';
+}
+
+async function openUserByName(username){
+  const user=allUsers.find(u=>u.username===username);
+  if(user) openUser(user.id);
+  else { await loadUsers(); const u2=allUsers.find(u=>u.username===username); if(u2) openUser(u2.id); }
+}
+
+function closeModal(){ document.getElementById('userModal').style.display='none'; selectedUserId=null; }
+
+async function giveEggs(){
+  const amt=parseInt(prompt('Kaç yumurta ver?'));
+  if(!amt||isNaN(amt)||amt<=0) return;
+  await fetch('/api/admin/give-eggs',{method:'POST',headers:{'Content-Type':'application/json','x-admin-password':adminPass},body:JSON.stringify({user_id:selectedUserId,amount:amt})});
+  toast('✅ '+amt+' yumurta verildi!');
+  openUser(selectedUserId); loadUsers();
+}
+
+async function resetScore(){
+  if(!confirm('Skoru sıfırla?')) return;
+  await fetch('/api/admin/reset-score',{method:'POST',headers:{'Content-Type':'application/json','x-admin-password':adminPass},body:JSON.stringify({user_id:selectedUserId})});
+  toast('✅ Skor sıfırlandı!');
+  openUser(selectedUserId); loadUsers();
+}
+
+async function deleteUser(){
+  if(!confirm('Kullanıcıyı sil? Bu işlem geri alınamaz!')) return;
+  await fetch('/api/admin/user/'+selectedUserId,{method:'DELETE',headers:{'x-admin-password':adminPass}});
+  toast('🗑️ Kullanıcı silindi!');
+  closeModal(); loadUsers(); loadStats();
+}
+
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.opacity='1';
+  setTimeout(()=>el.style.opacity='0',2500);
+}
+</script>
+</body>
+</html>

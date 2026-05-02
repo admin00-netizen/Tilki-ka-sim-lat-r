@@ -1,0 +1,1198 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/FtEej2Equ4UlBnxEh723dOf9HdoFQwvm/2d7ea056-505b-4dd9-8bde-64e846a0e850/files/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">
+<title>🦊 Tilki Kaçışı</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:#000;overflow:hidden;font-family:'Arial Rounded MT Bold',Arial,sans-serif;touch-action:none;}
+canvas{display:block;width:100vw;height:100vh;}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;transition:opacity 0.4s;}
+.hidden{display:none!important;}
+/* Loading */
+#loadingScreen{background:linear-gradient(180deg,#1a0a00 0%,#3d1a00 50%,#1a3a00 100%);}
+.loading-title{font-size:clamp(40px,10vw,80px);color:#FFD700;text-shadow:0 0 30px #FF6600,0 4px 0 #8B4500;letter-spacing:4px;animation:pulse 1s infinite;}
+.loading-sub{font-size:clamp(14px,4vw,22px);color:#FFA500;margin-top:10px;letter-spacing:2px;}
+.loading-bar-wrap{width:min(320px,80vw);height:20px;background:#333;border-radius:10px;margin-top:30px;border:2px solid #FFA500;overflow:hidden;}
+.loading-bar{height:100%;background:linear-gradient(90deg,#FF6600,#FFD700);border-radius:10px;width:0%;transition:width 0.3s;}
+.loading-emoji{font-size:80px;animation:bounce 0.6s infinite alternate;}
+@keyframes pulse{0%{text-shadow:0 0 30px #FF6600,0 4px 0 #8B4500;}50%{text-shadow:0 0 60px #FF9900,0 4px 0 #8B4500;}100%{text-shadow:0 0 30px #FF6600,0 4px 0 #8B4500;}}
+@keyframes bounce{from{transform:translateY(0);}to{transform:translateY(-15px);}}
+/* Welcome */
+#welcomeScreen{background:linear-gradient(180deg,#87CEEB 0%,#98D8A0 60%,#5A8A3C 100%);}
+.welcome-title{font-size:clamp(22px,6vw,50px);color:#FF6600;text-shadow:3px 3px 0 #8B2500;text-align:center;padding:0 20px;}
+.welcome-sub{font-size:clamp(14px,3.5vw,24px);color:#fff;text-shadow:1px 1px 3px #000;margin-top:15px;text-align:center;}
+.btn-primary{background:linear-gradient(135deg,#FF6600,#FF3300);color:#fff;border:none;padding:16px 50px;font-size:clamp(18px,4vw,28px);border-radius:50px;cursor:pointer;box-shadow:0 6px 0 #8B2500,0 8px 15px rgba(0,0,0,0.4);transition:all 0.1s;font-family:inherit;font-weight:bold;text-shadow:1px 1px 2px #000;margin-top:20px;}
+.btn-primary:active{transform:translateY(4px);box-shadow:0 2px 0 #8B2500;}
+.btn-secondary{background:linear-gradient(135deg,#4CAF50,#2E7D32);color:#fff;border:none;padding:12px 35px;font-size:clamp(14px,3.5vw,20px);border-radius:50px;cursor:pointer;box-shadow:0 4px 0 #1B5E20;transition:all 0.1s;font-family:inherit;font-weight:bold;margin:5px;}
+.btn-secondary:active{transform:translateY(3px);box-shadow:0 1px 0 #1B5E20;}
+.btn-danger{background:linear-gradient(135deg,#f44336,#c62828);}
+/* Login */
+#loginScreen{background:linear-gradient(180deg,#1a0a00 0%,#3d1a00 60%,#1a3a00 100%);}
+.login-box{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:25px;padding:clamp(20px,5vw,40px);width:min(380px,90vw);border:2px solid rgba(255,165,0,0.4);box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.login-title{font-size:clamp(24px,6vw,40px);color:#FFD700;text-align:center;margin-bottom:20px;text-shadow:2px 2px 0 #FF6600;}
+.login-label{color:#FFA500;font-size:clamp(12px,3vw,16px);margin-bottom:5px;display:block;}
+.login-input{width:100%;padding:12px 18px;border-radius:12px;border:2px solid #FF6600;background:rgba(0,0,0,0.4);color:#fff;font-size:clamp(14px,3.5vw,18px);font-family:inherit;margin-bottom:15px;outline:none;}
+.login-input:focus{border-color:#FFD700;box-shadow:0 0 10px rgba(255,215,0,0.3);}
+/* Menu */
+#menuScreen{background:transparent;}
+.menu-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);}
+.menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:20px;}
+.menu-title{font-size:clamp(28px,8vw,70px);color:#FFD700;text-shadow:3px 3px 0 #FF6600,0 0 40px #FF9900;text-align:center;margin-bottom:5px;}
+.menu-user{font-size:clamp(14px,3.5vw,20px);color:#fff;background:rgba(0,0,0,0.5);padding:8px 20px;border-radius:20px;margin-bottom:20px;}
+.menu-eggs{font-size:clamp(16px,4vw,24px);color:#FFD700;background:rgba(0,0,0,0.5);padding:8px 20px;border-radius:20px;margin-bottom:15px;}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:min(320px,90vw);}
+.menu-btn{background:linear-gradient(135deg,#FF6600,#FF3300);color:#fff;border:none;padding:clamp(12px,3vw,18px);font-size:clamp(14px,3.5vw,20px);border-radius:18px;cursor:pointer;box-shadow:0 5px 0 #8B2500;transition:all 0.1s;font-family:inherit;font-weight:bold;text-shadow:1px 1px 2px #000;}
+.menu-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #8B2500;}
+.menu-btn.green{background:linear-gradient(135deg,#4CAF50,#2E7D32);box-shadow:0 5px 0 #1B5E20;}
+.menu-btn.blue{background:linear-gradient(135deg,#2196F3,#1565C0);box-shadow:0 5px 0 #0D47A1;}
+.menu-btn.purple{background:linear-gradient(135deg,#9C27B0,#6A1B9A);box-shadow:0 5px 0 #4A148C;}
+.menu-btn.orange{background:linear-gradient(135deg,#FF9800,#E65100);box-shadow:0 5px 0 #BF360C;}
+/* HUD */
+#gameHUD{position:fixed;inset:0;pointer-events:none;z-index:20;}
+.hud-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:linear-gradient(180deg,rgba(0,0,0,0.6),transparent);}
+.hud-score{color:#fff;font-size:clamp(18px,5vw,28px);font-weight:bold;text-shadow:2px 2px 4px #000;}
+.hud-eggs{color:#FFD700;font-size:clamp(16px,4vw,24px);font-weight:bold;text-shadow:2px 2px 4px #000;}
+.hud-powerup{color:#00FF88;font-size:clamp(14px,3.5vw,20px);font-weight:bold;text-shadow:1px 1px 3px #000;text-align:center;}
+.hud-bottom{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-end;padding:0 20px;pointer-events:all;}
+.btn-game{background:rgba(255,255,255,0.2);backdrop-filter:blur(5px);border:3px solid rgba(255,255,255,0.4);border-radius:50%;width:clamp(64px,15vw,80px);height:clamp(64px,15vw,80px);font-size:clamp(24px,6vw,36px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.1s;box-shadow:0 4px 15px rgba(0,0,0,0.3);}
+.btn-game:active{transform:scale(0.9);background:rgba(255,255,255,0.4);}
+.btn-rocket{background:rgba(255,100,0,0.4);border-color:rgba(255,150,0,0.7);}
+.btn-rocket.cooldown{opacity:0.4;}
+.mud-bar{position:absolute;top:55px;left:50%;transform:translateX(-50%);display:flex;gap:8px;}
+.mud-dot{width:18px;height:18px;border-radius:50%;border:2px solid #fff;background:#888;}
+.mud-dot.filled{background:#8B4513;}
+/* Overlays */
+.overlay-screen{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:20px;}
+.overlay-title{font-size:clamp(28px,7vw,52px);color:#FFD700;text-shadow:2px 2px 0 #FF6600;margin-bottom:20px;text-align:center;}
+/* Game Over */
+#gameoverScreen{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.go-title{font-size:clamp(32px,8vw,64px);color:#FF4444;text-shadow:3px 3px 0 #880000;animation:pulse 1s infinite;margin-bottom:20px;}
+.go-stats{background:rgba(255,255,255,0.1);border-radius:20px;padding:20px 40px;text-align:center;margin-bottom:20px;border:2px solid #FF6600;}
+.go-stat{font-size:clamp(16px,4vw,24px);color:#fff;margin:8px 0;}
+.go-stat span{color:#FFD700;font-weight:bold;}
+/* Shop */
+#shopScreen .shop-tabs{display:flex;gap:10px;margin-bottom:20px;width:min(500px,95vw);}
+.shop-tab{flex:1;padding:10px;background:rgba(255,255,255,0.1);border:2px solid rgba(255,165,0,0.3);border-radius:10px;color:#FFA500;cursor:pointer;font-size:clamp(14px,3.5vw,18px);font-family:inherit;transition:all 0.2s;}
+.shop-tab.active{background:rgba(255,140,0,0.3);border-color:#FFA500;color:#FFD700;}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;width:min(500px,95vw);padding-bottom:20px;}
+.shop-item{background:rgba(255,255,255,0.07);border:2px solid rgba(255,165,0,0.2);border-radius:15px;padding:15px 10px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.shop-item:hover,.shop-item:active{border-color:#FFA500;background:rgba(255,165,0,0.15);}
+.shop-item.owned{border-color:#4CAF50;}
+.shop-item.equipped{border-color:#00BCD4;background:rgba(0,188,212,0.15);}
+.shop-item-emoji{font-size:48px;margin-bottom:8px;}
+.shop-item-name{font-size:clamp(11px,2.8vw,14px);color:#fff;margin-bottom:5px;font-weight:bold;}
+.shop-item-price{font-size:clamp(11px,2.8vw,14px);color:#FFD700;}
+.shop-item-badge{font-size:11px;padding:3px 8px;border-radius:10px;display:inline-block;margin-top:4px;}
+.badge-owned{background:#2E7D32;color:#fff;}
+.badge-equipped{background:#006064;color:#fff;}
+/* Daily Reward */
+#dailyRewardScreen{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.reward-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:20px 0;width:min(380px,95vw);}
+.reward-day{background:rgba(255,255,255,0.07);border:2px solid rgba(255,165,0,0.2);border-radius:12px;padding:10px 5px;text-align:center;}
+.reward-day.today{border-color:#FFD700;background:rgba(255,215,0,0.2);}
+.reward-day.claimed{border-color:#4CAF50;background:rgba(76,175,80,0.2);}
+.reward-day-num{font-size:11px;color:#FFA500;}
+.reward-day-egg{font-size:22px;}
+.reward-day-amt{font-size:11px;color:#FFD700;font-weight:bold;}
+/* Leaderboard */
+#leaderboardScreen{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:30;display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:20px;}
+.lb-row{display:flex;align-items:center;background:rgba(255,255,255,0.07);border-radius:12px;padding:10px 15px;margin-bottom:8px;width:min(400px,95vw);gap:12px;}
+.lb-rank{font-size:22px;width:40px;text-align:center;}
+.lb-name{flex:1;color:#fff;font-size:clamp(14px,3.5vw,18px);font-weight:bold;}
+.lb-score{color:#FFD700;font-size:clamp(13px,3.2vw,16px);}
+/* Notification */
+#notification{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#FFD700;padding:12px 25px;border-radius:25px;font-size:clamp(14px,3.5vw,20px);z-index:100;pointer-events:none;opacity:0;transition:opacity 0.3s;text-align:center;max-width:90vw;border:2px solid rgba(255,215,0,0.4);}
+</style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+
+<!-- Notification -->
+<div id="notification"></div>
+
+<!-- Loading Screen -->
+<div id="loadingScreen" class="screen">
+  <div class="loading-emoji">🦊</div>
+  <div class="loading-title">TİLKİ KAÇIŞI</div>
+  <div class="loading-sub">Çiftliğin En Hızlı Tilkisi</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
+  <div id="loadingText" style="color:#FFA500;margin-top:10px;font-size:clamp(12px,3vw,16px);">Yükleniyor...</div>
+</div>
+
+<!-- Welcome Screen -->
+<div id="welcomeScreen" class="screen hidden">
+  <div style="font-size:clamp(60px,15vw,120px);animation:bounce 0.7s infinite alternate;">🦊</div>
+  <div class="welcome-title">🐔 TİLKİ'NİN TAVUĞUNA<br>HOŞ GELDİNİZ! 🐔</div>
+  <div class="welcome-sub">Tavuğunu çaldın, şimdi kaç!</div>
+  <button class="btn-primary" onclick="showScreen('login')">OYNAMAYA BAŞLA ▶</button>
+</div>
+
+<!-- Login Screen -->
+<div id="loginScreen" class="screen hidden">
+  <div class="login-box">
+    <div class="login-title">🦊 GİRİŞ YAP</div>
+    <label class="login-label">👤 Kullanıcı Adı</label>
+    <input class="login-input" id="loginUsername" type="text" placeholder="Tilki adını gir..." maxlength="20" autocomplete="off">
+    <label class="login-label">🎂 Yaşın</label>
+    <input class="login-input" id="loginAge" type="number" placeholder="Kaç yaşındasın?" min="1" max="120">
+    <button class="btn-primary" style="width:100%;margin-top:5px;" onclick="doLogin()">DEVAM ET ➜</button>
+  </div>
+</div>
+
+<!-- Main Menu -->
+<div id="menuScreen" class="screen hidden">
+  <div class="menu-overlay"></div>
+  <div class="menu-content">
+    <div class="menu-title">🦊 TİLKİ KAÇIŞI</div>
+    <div class="menu-user" id="menuUsername">👤 Tilki</div>
+    <div class="menu-eggs" id="menuEggs">🥚 0 Yumurta</div>
+    <div style="font-size:clamp(11px,2.5vw,14px);color:#aaa;margin-bottom:10px;" id="menuHighScore">🏆 En Yüksek: 0m</div>
+    <div id="characterPreview" style="font-size:80px;margin:10px 0;animation:bounce 0.7s infinite alternate;">🦊</div>
+    <button class="btn-primary" style="width:min(260px,80vw);font-size:clamp(20px,5vw,30px);padding:18px;" onclick="startGame()">▶ OYNA</button>
+    <div class="menu-grid" style="margin-top:12px;">
+      <button class="menu-btn green" onclick="openShop()">🛒 MAĞAZA</button>
+      <button class="menu-btn blue" onclick="openDaily()">🎁 GÜNLÜK ÖDÜL</button>
+      <button class="menu-btn purple" onclick="openLeaderboard()">🏆 SKOR TABLOSU</button>
+      <button class="menu-btn orange" onclick="showScreen('login')">🔄 ÇIKIŞ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game HUD -->
+<div id="gameHUD" class="hidden">
+  <div class="hud-top">
+    <div class="hud-score">📏 <span id="hudScore">0</span>m</div>
+    <div class="hud-powerup" id="hudPowerup"></div>
+    <div class="hud-eggs">🥚 <span id="hudEggs">0</span></div>
+  </div>
+  <div class="mud-bar" id="mudBar">
+    <div class="mud-dot" id="mud0"></div>
+    <div class="mud-dot" id="mud1"></div>
+  </div>
+  <div class="hud-bottom">
+    <button class="btn-game" id="btnLeft" ontouchstart="tapLeft()" onclick="tapLeft()">⬅</button>
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+      <button class="btn-game btn-rocket" id="btnRocket" ontouchstart="tapRocket()" onclick="tapRocket()" title="Roket (Tavuğa bin 15sn)">🚀</button>
+      <button class="btn-game" id="btnJump" ontouchstart="tapJump()" onclick="tapJump()">⬆</button>
+    </div>
+    <button class="btn-game" id="btnRight" ontouchstart="tapRight()" onclick="tapRight()">➡</button>
+  </div>
+</div>
+
+<!-- Game Over -->
+<div id="gameoverScreen" class="hidden">
+  <div class="go-title">YAKALANDIN! 🐾</div>
+  <div style="font-size:60px;margin-bottom:15px;">😅</div>
+  <div class="go-stats">
+    <div class="go-stat">📏 Mesafe: <span id="goScore">0</span>m</div>
+    <div class="go-stat">🥚 Toplanan: <span id="goEggs">0</span> Yumurta</div>
+    <div class="go-stat">🏆 En Yüksek: <span id="goHigh">0</span>m</div>
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn-primary" onclick="startGame()">🔄 TEKRAR OYNA</button>
+    <button class="btn-secondary" onclick="showScreen('menu')">🏠 MENÜ</button>
+  </div>
+</div>
+
+<!-- Shop -->
+<div id="shopScreen" class="overlay-screen hidden">
+  <div class="overlay-title">🛒 MAĞAZA</div>
+  <div style="color:#FFD700;margin-bottom:15px;font-size:clamp(16px,4vw,22px);">🥚 <span id="shopEggs">0</span> Yumurtan var</div>
+  <div class="shop-tabs">
+    <button class="shop-tab active" id="tabChars" onclick="switchShopTab('chars')">🦊 Karakterler</button>
+    <button class="shop-tab" id="tabCostumes" onclick="switchShopTab('costumes')">👗 Kostümler</button>
+  </div>
+  <div id="shopGrid" class="shop-grid"></div>
+  <button class="btn-secondary" onclick="closeShop()">✖ KAPAT</button>
+</div>
+
+<!-- Daily Reward -->
+<div id="dailyRewardScreen" class="hidden">
+  <div class="overlay-title" style="margin-top:30px;">🎁 GÜNLÜK ÖDÜL</div>
+  <div style="color:#fff;font-size:clamp(13px,3.2vw,16px);margin-bottom:10px;text-align:center;">Her gün giriş yap, ödül kazan!</div>
+  <div class="reward-grid" id="rewardGrid"></div>
+  <div id="rewardResult" style="font-size:clamp(18px,5vw,30px);color:#FFD700;text-align:center;min-height:50px;"></div>
+  <button class="btn-primary" id="claimBtn" onclick="claimReward()">🎁 ÖDÜLÜ AL!</button>
+  <button class="btn-secondary" style="margin-top:10px;" onclick="closeScreen('dailyRewardScreen')">✖ KAPAT</button>
+</div>
+
+<!-- Leaderboard -->
+<div id="leaderboardScreen" class="hidden">
+  <div class="overlay-title" style="margin-top:20px;">🏆 SKOR TABLOSU</div>
+  <div id="lbContent" style="width:min(400px,95vw);"></div>
+  <button class="btn-secondary" style="margin:15px 0;" onclick="closeScreen('leaderboardScreen')">✖ KAPAT</button>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════════════════
+const API = '';  // same origin
+
+const CHARACTERS = [
+  {id:'orange_fox',  name:'Turuncu Tilki', emoji:'🦊', color:'#FF6600', price:0,    desc:'Varsayılan'},
+  {id:'red_fox',     name:'Kızıl Tilki',   emoji:'🔴🦊',color:'#CC0000', price:500,  desc:'Ateş gibi!'},
+  {id:'white_fox',   name:'Buz Tilkisi',   emoji:'⬜🦊',color:'#EEEEEE', price:1000, desc:'Kar beyazı'},
+  {id:'black_fox',   name:'Gece Tilkisi',  emoji:'⬛🦊',color:'#222222', price:2000, desc:'Gölgelerin ustası'},
+  {id:'blue_fox',    name:'Okyanus Tilkisi',emoji:'💙🦊',color:'#0066FF', price:3500, desc:'Serin ve hızlı'},
+  {id:'pink_fox',    name:'Pembe Tilki',   emoji:'💗🦊',color:'#FF69B4', price:5000, desc:'Tatlı ama tehlikeli'},
+  {id:'golden_fox',  name:'Altın Tilki',   emoji:'✨🦊',color:'#FFD700', price:8000, desc:'Efsanevi!'},
+  {id:'rainbow_fox', name:'Gökkuşağı',     emoji:'🌈🦊',color:'#FF00FF', price:15000,desc:'Ultra nadir!'},
+];
+
+const COSTUMES = [
+  {id:'none',        name:'Kostüm Yok',    emoji:'❌',   price:0,    desc:'Sade tilki'},
+  {id:'farmer_hat',  name:'Çiftçi Şapkası',emoji:'👒',   price:300,  desc:'Hangi çiftçi?'},
+  {id:'chef_hat',    name:'Aşçı Şapkası',  emoji:'👨‍🍳',  price:600,  desc:'Pişirmek için değil'},
+  {id:'superhero',   name:'Süper Pelerin',  emoji:'🦸',   price:800,  desc:'Süper tilki!'},
+  {id:'viking',      name:'Viking Kaskı',   emoji:'⛑️',   price:1200, desc:'Vahşi savaşçı'},
+  {id:'pirate',      name:'Korsan',         emoji:'🏴‍☠️',  price:2000, desc:'Tavuk çalan korsan'},
+  {id:'ninja',       name:'Ninja',          emoji:'🥷',   price:3000, desc:'Sessiz kaçış'},
+  {id:'astronaut',   name:'Astronot',       emoji:'👨‍🚀',  price:5000, desc:'Uzay tilkisi'},
+  {id:'devil',       name:'Şeytan',         emoji:'😈',   price:4000, desc:'Kötülüğün ta kendisi'},
+  {id:'clown',       name:'Palyaço',        emoji:'🤡',   price:1800, desc:'Komik kaçış'},
+  {id:'cowboy',      name:'Kovboy',         emoji:'🤠',   price:900,  desc:'Gün batımı tilkisi'},
+  {id:'wizard',      name:'Büyücü',         emoji:'🧙',   price:3500, desc:'Sihirli kaçış'},
+];
+
+// ════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════
+let currentUser = null;
+let ownedItems = [];
+let gameRunning = false;
+let animFrame = null;
+
+// ════════════════════════════════════════════════════════════
+//  CANVAS SETUP
+// ════════════════════════════════════════════════════════════
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ════════════════════════════════════════════════════════════
+//  SCREEN MANAGEMENT
+// ════════════════════════════════════════════════════════════
+const screens = ['loadingScreen','welcomeScreen','loginScreen','menuScreen',
+  'gameoverScreen','shopScreen','dailyRewardScreen','leaderboardScreen'];
+
+function showScreen(name){
+  screens.forEach(s => document.getElementById(s).classList.add('hidden'));
+  document.getElementById('gameHUD').classList.add('hidden');
+  if(name === 'game'){
+    document.getElementById('gameHUD').classList.remove('hidden');
+  } else if(name) {
+    const el = document.getElementById(name+'Screen') || document.getElementById(name);
+    if(el) el.classList.remove('hidden');
+  }
+  // Menu background
+  if(name === 'menu' || name === 'welcome'){
+    bgMode = 'menu';
+  }
+}
+
+function closeScreen(id){
+  document.getElementById(id).classList.add('hidden');
+  showScreen('menu');
+}
+
+// ════════════════════════════════════════════════════════════
+//  BACKGROUND ANIMATION (always running)
+// ════════════════════════════════════════════════════════════
+let bgMode = 'loading';
+let bgOffset = 0;
+let clouds = [];
+for(let i=0;i<6;i++) clouds.push({x:Math.random()*2000,y:Math.random()*0.3,w:80+Math.random()*120,speed:0.3+Math.random()*0.4});
+let bgAnimTime = 0;
+
+function drawBackground(){
+  bgAnimTime++;
+  // Sky
+  let sky = ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#87CEEB');
+  sky.addColorStop(0.7,'#B0E0FF');
+  sky.addColorStop(1,'#C8E6C9');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0,0,W,H);
+
+  // Sun
+  ctx.fillStyle='rgba(255,220,0,0.9)';
+  ctx.beginPath();
+  ctx.arc(W*0.85,H*0.12,35,0,Math.PI*2);
+  ctx.fill();
+  // Sun rays
+  ctx.strokeStyle='rgba(255,200,0,0.4)';
+  ctx.lineWidth=3;
+  for(let i=0;i<8;i++){
+    const a=i/8*Math.PI*2+bgAnimTime*0.01;
+    ctx.beginPath();
+    ctx.moveTo(W*0.85+Math.cos(a)*38,H*0.12+Math.sin(a)*38);
+    ctx.lineTo(W*0.85+Math.cos(a)*55,H*0.12+Math.sin(a)*55);
+    ctx.stroke();
+  }
+
+  // Clouds
+  clouds.forEach(c=>{
+    c.x -= c.speed;
+    if(c.x < -c.w) c.x = W + c.w;
+    ctx.fillStyle='rgba(255,255,255,0.85)';
+    ctx.beginPath();
+    ctx.ellipse(c.x,H*c.y,c.w,c.w*0.4,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(c.x+c.w*0.3,H*c.y-c.w*0.15,c.w*0.55,c.w*0.35,0,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  // Hills
+  ctx.fillStyle='#5A8A3C';
+  ctx.beginPath();
+  ctx.moveTo(0,H*0.62);
+  for(let x=0;x<=W;x+=20){
+    ctx.lineTo(x, H*0.62 + Math.sin((x+bgOffset*0.3)/200)*30 - 20);
+  }
+  ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fill();
+
+  // Barn (far bg)
+  drawBarn(W*0.15 - (bgOffset*0.05)%W, H*0.45);
+  drawBarn(W*0.65 - (bgOffset*0.05)%W, H*0.5);
+
+  // Ground
+  ctx.fillStyle='#6B8E3C';
+  ctx.fillRect(0,H*0.68,W,H*0.32);
+  ctx.fillStyle='#8B6914';
+  ctx.fillRect(0,H*0.72,W,H*0.28);
+
+  // Road (3 lanes)
+  const laneW = W/3;
+  ctx.fillStyle='#A0784A';
+  ctx.fillRect(0,H*0.72,W,H*0.28);
+  // Lane dividers
+  ctx.strokeStyle='rgba(255,255,255,0.3)';
+  ctx.setLineDash([30,20]);
+  ctx.lineWidth=3;
+  const dashOff = bgOffset%50;
+  ctx.lineDashOffset = -dashOff;
+  for(let i=1;i<3;i++){
+    ctx.beginPath();
+    ctx.moveTo(laneW*i,H*0.72); ctx.lineTo(laneW*i,H);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+}
+
+function drawBarn(bx, by){
+  if(bx < -100 || bx > W+100) return;
+  ctx.fillStyle='#8B0000';
+  ctx.fillRect(bx,by,70,50);
+  ctx.fillStyle='#CC2200';
+  ctx.beginPath();
+  ctx.moveTo(bx-5,by); ctx.lineTo(bx+75,by); ctx.lineTo(bx+35,by-35);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#4A2800';
+  ctx.fillRect(bx+5,by+20,18,30);
+  ctx.fillRect(bx+47,by+20,18,30);
+  ctx.fillStyle='rgba(255,255,200,0.5)';
+  ctx.fillRect(bx+28,by+10,15,15);
+}
+
+// ════════════════════════════════════════════════════════════
+//  LOADING SEQUENCE
+// ════════════════════════════════════════════════════════════
+function runLoading(){
+  bgMode='loading';
+  let pct = 0;
+  const bar = document.getElementById('loadingBar');
+  const txt = document.getElementById('loadingText');
+  const msgs = ['Tavuklar sayılıyor...','Çiftlik hazırlanıyor...','Tilki ısınıyor...','Hazır!'];
+  let mi=0;
+  const iv = setInterval(()=>{
+    pct += 2;
+    bar.style.width = pct+'%';
+    if(pct%25===0 && mi<msgs.length) txt.textContent = msgs[mi++];
+    if(pct>=100){
+      clearInterval(iv);
+      setTimeout(()=>{
+        showScreen('welcome');
+        bgMode='menu';
+      },500);
+    }
+  },50);
+}
+
+// ════════════════════════════════════════════════════════════
+//  MAIN BG LOOP (runs always)
+// ════════════════════════════════════════════════════════════
+function bgLoop(){
+  bgOffset += 0.5;
+  drawBackground();
+  requestAnimationFrame(bgLoop);
+}
+bgLoop();
+
+// ════════════════════════════════════════════════════════════
+//  NOTIFICATIONS
+// ════════════════════════════════════════════════════════════
+let notifTimeout;
+function notify(msg){
+  const el = document.getElementById('notification');
+  el.textContent = msg;
+  el.style.opacity='1';
+  clearTimeout(notifTimeout);
+  notifTimeout=setTimeout(()=>el.style.opacity='0',2500);
+}
+
+// ════════════════════════════════════════════════════════════
+//  LOGIN / REGISTER
+// ════════════════════════════════════════════════════════════
+async function doLogin(){
+  const username = document.getElementById('loginUsername').value.trim();
+  const age = parseInt(document.getElementById('loginAge').value)||0;
+  if(!username){ notify('Kullanıcı adı gir!'); return; }
+  try{
+    const r = await fetch(API+'/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,age})});
+    const d = await r.json();
+    if(d.success){
+      currentUser = d.user;
+      ownedItems = d.owned || [];
+      // fetch owned items
+      const r2 = await fetch(API+'/api/user/'+encodeURIComponent(username));
+      const d2 = await r2.json();
+      if(d2.success){ currentUser=d2.user; ownedItems=d2.owned||[]; }
+      showMenu();
+      notify('🦊 Hoş geldin, '+username+'!');
+    } else {
+      notify('Hata: '+(d.error||'Bilinmeyen'));
+    }
+  } catch(e){ notify('Sunucuya bağlanılamadı!'); }
+}
+
+document.getElementById('loginUsername').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('loginAge').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+function showMenu(){
+  showScreen('menu');
+  updateMenuUI();
+  checkDailyReward();
+}
+
+function updateMenuUI(){
+  if(!currentUser) return;
+  document.getElementById('menuUsername').textContent='👤 '+currentUser.username;
+  document.getElementById('menuEggs').textContent='🥚 '+currentUser.total_eggs+' Yumurta';
+  document.getElementById('menuHighScore').textContent='🏆 En Yüksek: '+currentUser.high_score+'m';
+  const char = CHARACTERS.find(c=>c.id===currentUser.selected_character)||CHARACTERS[0];
+  const cst = COSTUMES.find(c=>c.id===currentUser.selected_costume);
+  const costumeEmoji = (cst && cst.id!=='none') ? cst.emoji : '';
+  document.getElementById('characterPreview').textContent = costumeEmoji + char.emoji;
+}
+
+async function refreshUser(){
+  if(!currentUser) return;
+  try{
+    const r = await fetch(API+'/api/user/'+encodeURIComponent(currentUser.username));
+    const d = await r.json();
+    if(d.success){ currentUser=d.user; ownedItems=d.owned||[]; updateMenuUI(); }
+  } catch(e){}
+}
+
+// ════════════════════════════════════════════════════════════
+//  DAILY REWARD CHECK
+// ════════════════════════════════════════════════════════════
+function checkDailyReward(){
+  if(!currentUser) return;
+  const today = new Date().toISOString().slice(0,10);
+  if(currentUser.last_daily_claim !== today){
+    // Show badge indicator
+    notify('🎁 Günlük ödülün seni bekliyor!');
+  }
+}
+
+function openDaily(){
+  buildRewardGrid();
+  document.getElementById('dailyRewardScreen').classList.remove('hidden');
+  screens.filter(s=>s!=='dailyRewardScreen').forEach(s=>document.getElementById(s).classList.add('hidden'));
+}
+
+function buildRewardGrid(){
+  if(!currentUser) return;
+  const rewards=[50,75,100,150,200,250,500];
+  const today=new Date().toISOString().slice(0,10);
+  const claimed = currentUser.last_daily_claim===today;
+  const curDay = currentUser.daily_reward_day;
+  let html='';
+  rewards.forEach((r,i)=>{
+    const day=i+1;
+    const isPast = claimed ? day < curDay : day < curDay;
+    const isToday = claimed ? day===((curDay-1)||7) : day===curDay;
+    html+=`<div class="reward-day ${isToday?'today':''} ${isPast?'claimed':''}">
+      <div class="reward-day-num">Gün ${day}</div>
+      <div class="reward-day-egg">🥚</div>
+      <div class="reward-day-amt">${r}</div>
+    </div>`;
+  });
+  document.getElementById('rewardGrid').innerHTML=html;
+  const claimBtn=document.getElementById('claimBtn');
+  const resultEl=document.getElementById('rewardResult');
+  if(claimed){
+    claimBtn.disabled=true; claimBtn.textContent='✅ Bugün alındı!';
+    resultEl.textContent='Yarın tekrar gel! 😊';
+  } else {
+    claimBtn.disabled=false; claimBtn.textContent='🎁 ÖDÜLÜ AL!';
+    resultEl.textContent='';
+  }
+}
+
+async function claimReward(){
+  if(!currentUser) return;
+  try{
+    const r=await fetch(API+'/api/daily-reward',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:currentUser.username})});
+    const d=await r.json();
+    if(d.success){
+      currentUser=d.user; ownedItems= ownedItems;
+      document.getElementById('rewardResult').textContent=`+${d.eggs} 🥚 Yumurta kazandın! (Gün ${d.day})`;
+      notify(`🎉 Gün ${d.day} ödülü: +${d.eggs} yumurta!`);
+      buildRewardGrid();
+      updateMenuUI();
+    } else {
+      document.getElementById('rewardResult').textContent=d.error||'Hata!';
+      if(d.claimed) buildRewardGrid();
+    }
+  } catch(e){ notify('Bağlantı hatası!'); }
+}
+
+// ════════════════════════════════════════════════════════════
+//  SHOP
+// ════════════════════════════════════════════════════════════
+let shopTab='chars';
+
+function openShop(){
+  document.getElementById('shopEggs').textContent=currentUser?currentUser.total_eggs:0;
+  switchShopTab('chars');
+  document.getElementById('shopScreen').classList.remove('hidden');
+  screens.filter(s=>s!=='shopScreen').forEach(s=>document.getElementById(s).classList.add('hidden'));
+}
+
+function closeShop(){
+  document.getElementById('shopScreen').classList.add('hidden');
+  showScreen('menu');
+}
+
+function switchShopTab(tab){
+  shopTab=tab;
+  document.getElementById('tabChars').classList.toggle('active',tab==='chars');
+  document.getElementById('tabCostumes').classList.toggle('active',tab==='costumes');
+  buildShopGrid();
+}
+
+function buildShopGrid(){
+  const items = shopTab==='chars'?CHARACTERS:COSTUMES;
+  const type = shopTab==='chars'?'character':'costume';
+  const equipped = shopTab==='chars'?currentUser?.selected_character:currentUser?.selected_costume;
+  let html='';
+  items.forEach(item=>{
+    const isOwned = item.price===0 || ownedItems.some(o=>o.item_type===type&&o.item_id===item.id);
+    const isEquipped = item.id===equipped;
+    let badge='';
+    if(isEquipped) badge='<span class="shop-item-badge badge-equipped">✅ Seçili</span>';
+    else if(isOwned) badge='<span class="shop-item-badge badge-owned">✔ Sahip</span>';
+    else badge=`<span class="shop-item-badge" style="background:#555;color:#fff;">🥚 ${item.price.toLocaleString()}</span>`;
+    html+=`<div class="shop-item ${isEquipped?'equipped':''} ${isOwned&&!isEquipped?'owned':''}" onclick="buyOrEquip('${type}','${item.id}',${item.price},${isOwned})">
+      <div class="shop-item-emoji">${item.emoji}</div>
+      <div class="shop-item-name">${item.name}</div>
+      <div class="shop-item-price" style="font-size:11px;color:#aaa;">${item.desc}</div>
+      ${badge}
+    </div>`;
+  });
+  document.getElementById('shopGrid').innerHTML=html;
+}
+
+async function buyOrEquip(type,itemId,price,isOwned){
+  if(!currentUser) return;
+  if(isOwned || price===0){
+    // Equip
+    try{
+      const r=await fetch(API+'/api/equip',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:currentUser.username,item_type:type,item_id:itemId})});
+      const d=await r.json();
+      if(d.success){
+        currentUser=d.user;
+        notify('✅ Seçildi!');
+        buildShopGrid(); updateMenuUI();
+      }
+    } catch(e){ notify('Hata!'); }
+  } else {
+    // Buy
+    if(currentUser.total_eggs < price){
+      notify(`❌ Yeterli yumurtan yok! (${price.toLocaleString()} gerekli)`);
+      return;
+    }
+    if(!confirm(`${price.toLocaleString()} yumurta harcayacaksın. Satın al?`)) return;
+    try{
+      const r=await fetch(API+'/api/buy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:currentUser.username,item_type:type,item_id:itemId,price})});
+      const d=await r.json();
+      if(d.success){
+        currentUser=d.user;
+        ownedItems.push({item_type:type,item_id:itemId});
+        notify('🎉 Satın alındı!');
+        document.getElementById('shopEggs').textContent=currentUser.total_eggs;
+        buildShopGrid(); updateMenuUI();
+      } else {
+        notify(d.error||'Hata!');
+      }
+    } catch(e){ notify('Hata!'); }
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  LEADERBOARD
+// ════════════════════════════════════════════════════════════
+async function openLeaderboard(){
+  document.getElementById('leaderboardScreen').classList.remove('hidden');
+  screens.filter(s=>s!=='leaderboardScreen').forEach(s=>document.getElementById(s).classList.add('hidden'));
+  document.getElementById('lbContent').innerHTML='<div style="color:#FFA500;text-align:center;">Yükleniyor...</div>';
+  try{
+    const r=await fetch(API+'/api/leaderboard');
+    const d=await r.json();
+    const medals=['🥇','🥈','🥉'];
+    let html='';
+    d.leaderboard.forEach((row,i)=>{
+      const char=CHARACTERS.find(c=>c.id===row.selected_character)||CHARACTERS[0];
+      html+=`<div class="lb-row">
+        <div class="lb-rank">${medals[i]||'#'+(i+1)}</div>
+        <div style="font-size:24px;">${char.emoji}</div>
+        <div class="lb-name">${row.username}</div>
+        <div class="lb-score">🏆 ${row.high_score}m<br><span style="font-size:11px;color:#aaa;">🥚 ${row.total_eggs}</span></div>
+      </div>`;
+    });
+    document.getElementById('lbContent').innerHTML=html||'<div style="color:#aaa;text-align:center;">Henüz skor yok!</div>';
+  } catch(e){
+    document.getElementById('lbContent').innerHTML='<div style="color:#f44">Bağlantı hatası!</div>';
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  GAME ENGINE
+// ════════════════════════════════════════════════════════════
+const LANE_COUNT = 3;
+const BASE_SPEED = 5;
+const GRAVITY = 0.7;
+const JUMP_FORCE = -16;
+const GROUND_FRAC = 0.78;
+
+let G = {}; // game state
+let player = {};
+let obstacles = [];
+let particles_arr = [];
+let gameLoopId = null;
+let touchStartX=0, touchStartY=0;
+
+function getLaneX(lane){
+  const lw = W/3;
+  return lw*lane + lw/2;
+}
+function getGroundY(){ return H*GROUND_FRAC; }
+
+function initGame(){
+  const char = CHARACTERS.find(c=>c.id===(currentUser?.selected_character||'orange_fox'))||CHARACTERS[0];
+  const costume = COSTUMES.find(c=>c.id===(currentUser?.selected_costume||'none'))||COSTUMES[0];
+  G = {
+    score: 0,
+    eggs: 0,
+    speed: BASE_SPEED,
+    frame: 0,
+    mudHits: 0,
+    powerup: null,      // 'rocket'|'wing'|null
+    powerupTimer: 0,
+    rocketCooldown: 0,
+    isOver: false,
+    char, costume
+  };
+  player = {
+    lane: 1,
+    targetLane: 1,
+    x: getLaneX(1),
+    y: getGroundY(),
+    velY: 0,
+    isJumping: false,
+    hasChicken: true,
+    width: 50,
+    height: 60,
+    animTimer: 0,
+    runFrame: 0
+  };
+  obstacles = [];
+  particles_arr = [];
+  spawnCounter = 0;
+  spawnInterval = 120;
+  bgOffset = 0;
+}
+
+let spawnCounter=0;
+let spawnInterval=120;
+
+const OBS_TYPES = ['single_hay','double_hay','chicken_coop','mud','wood_plank'];
+const OBS_CONFIG = {
+  single_hay:   {w:50, h:45,  color:'#DAA520', emoji:'🌾', canJump:true,  mudHits:0, fatal:1},
+  double_hay:   {w:55, h:90,  color:'#8B6914', emoji:'🌾🌾',canJump:false, mudHits:0, fatal:1},
+  chicken_coop: {w:80, h:80,  color:'#8B0000', emoji:'🏚️', canJump:false, mudHits:0, fatal:1},
+  mud:          {w:70, h:25,  color:'#5D4037', emoji:'💧',  canJump:true,  mudHits:1, fatal:2},
+  wood_plank:   {w:60, h:30,  color:'#795548', emoji:'🪵',  canJump:true,  mudHits:0, fatal:1},
+  egg:          {w:30, h:35,  color:'#FFF9C4', emoji:'🥚',  collectible:true},
+  wing:         {w:40, h:35,  color:'#E1F5FE', emoji:'🪶',  powerup:'wing'},
+};
+
+function spawnObstacle(){
+  const lane = Math.floor(Math.random()*3);
+  const groundY = getGroundY();
+  const laneX = getLaneX(lane);
+  // Weighted random
+  const roll = Math.random();
+  let type;
+  if(roll<0.25) type='egg';
+  else if(roll<0.35) type='wing';
+  else {
+    const types=['single_hay','double_hay','chicken_coop','mud','wood_plank'];
+    const weights=[0.3,0.15,0.15,0.2,0.2];
+    let r=Math.random(), acc=0;
+    type='single_hay';
+    for(let i=0;i<types.length;i++){acc+=weights[i];if(r<acc){type=types[i];break;}}
+  }
+  const cfg = OBS_CONFIG[type];
+  obstacles.push({
+    type, lane, x: W+80, cfg,
+    y: type==='wing' ? groundY - 120 - Math.random()*60 : groundY - cfg.h,
+    w: cfg.w, h: cfg.h,
+    hit: false
+  });
+}
+
+function updateGame(){
+  if(G.isOver) return;
+  G.frame++;
+  G.score = Math.floor(G.frame * G.speed / 60);
+  // Speed increase
+  G.speed = BASE_SPEED + G.score/200;
+  bgOffset += G.speed;
+
+  // Powerup timer
+  if(G.powerup){
+    G.powerupTimer--;
+    if(G.powerupTimer<=0){
+      G.powerup=null;
+      player.hasChicken=true;
+      document.getElementById('hudPowerup').textContent='';
+    } else {
+      const s = Math.ceil(G.powerupTimer/60);
+      if(G.powerup==='rocket') document.getElementById('hudPowerup').textContent=`🐔💨 ${s}s`;
+      else document.getElementById('hudPowerup').textContent=`🪶 UÇUŞ ${s}s`;
+    }
+  }
+  if(G.rocketCooldown>0){G.rocketCooldown--;const btn=document.getElementById('btnRocket');btn.classList.toggle('cooldown',G.rocketCooldown>0);}
+
+  // Player lane transition
+  const targetX = getLaneX(player.targetLane);
+  player.x += (targetX - player.x) * 0.2;
+
+  // Wall collision (if very far off center)
+  if(player.lane===0 && player.x < W/3*0 + 10) { endGame(); return; }
+  if(player.lane===2 && player.x > W/3*3 - 10) { endGame(); return; }
+
+  // Jump physics (not during wing fly)
+  if(G.powerup!=='wing'){
+    const groundY = getGroundY();
+    player.velY += GRAVITY;
+    player.y += player.velY;
+    if(player.y >= groundY){ player.y=groundY; player.velY=0; player.isJumping=false; }
+  } else {
+    // Flying: smooth up
+    const flyY = H*0.35;
+    player.y += (flyY - player.y)*0.05;
+    player.isJumping=false;
+  }
+
+  // Player animation
+  player.animTimer++;
+  if(player.animTimer%8===0) player.runFrame=(player.runFrame+1)%4;
+
+  // Spawn
+  spawnCounter++;
+  if(spawnCounter >= spawnInterval){
+    spawnCounter=0;
+    spawnInterval = Math.max(50, 120 - G.score/10);
+    spawnObstacle();
+    if(Math.random()<0.5 && G.score>30) spawnObstacle();
+  }
+
+  // Move & check obstacles
+  const groundY = getGroundY();
+  obstacles = obstacles.filter(ob=>{
+    ob.x -= G.speed;
+    if(ob.x < -100) return false;
+
+    // Check collision
+    if(!ob.hit){
+      const px = player.x - player.width/2;
+      const py = player.y - player.height;
+      const ox = ob.x - ob.w/2;
+      const oy = ob.y;
+      if(px < ox+ob.w && px+player.width > ox && py < oy+ob.h && py+player.height > oy){
+        if(G.powerup==='rocket'){ // invincible during rocket
+          if(!ob.cfg.collectible && !ob.cfg.powerup) spawnParticles(ob.x,ob.y,'#FF6600');
+          ob.hit=true; return false;
+        }
+        if(ob.cfg.collectible){
+          G.eggs++;
+          document.getElementById('hudEggs').textContent=G.eggs;
+          spawnParticles(ob.x,ob.y,'#FFD700');
+          ob.hit=true; return false;
+        }
+        if(ob.cfg.powerup==='wing'){
+          G.powerup='wing'; G.powerupTimer=20*60;
+          notify('🪶 Kanat gücü! 20 saniye uçuyorsun!');
+          spawnParticles(ob.x,ob.y,'#00BFFF');
+          ob.hit=true; return false;
+        }
+        // Obstacle hit
+        if(ob.cfg.mudHits>0){
+          G.mudHits++;
+          updateMudBar();
+          spawnParticles(ob.x,ob.y,'#8B4513');
+          if(G.mudHits>=2){ endGame(); return false; }
+          ob.hit=true; return false;
+        }
+        if(ob.cfg.canJump && player.isJumping){
+          // Safely jumped over
+          spawnParticles(ob.x,ob.y,'#88FF88');
+          ob.hit=true; return false;
+        }
+        endGame(); return false;
+      }
+    }
+    return true;
+  });
+
+  // Update particles
+  particles_arr = particles_arr.filter(p=>{
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.2; p.life--;
+    return p.life>0;
+  });
+
+  // HUD update
+  document.getElementById('hudScore').textContent=G.score;
+}
+
+function updateMudBar(){
+  document.getElementById('mud0').classList.toggle('filled',G.mudHits>0);
+  document.getElementById('mud1').classList.toggle('filled',G.mudHits>1);
+}
+
+function spawnParticles(x,y,color){
+  for(let i=0;i<8;i++){
+    particles_arr.push({x,y,vx:(Math.random()-0.5)*6,vy:-Math.random()*5-2,color,life:30+Math.random()*20});
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  GAME RENDERING
+// ════════════════════════════════════════════════════════════
+function renderGame(){
+  drawBackground();
+
+  // Draw obstacles
+  obstacles.forEach(ob=>drawObstacle(ob));
+
+  // Draw particles
+  particles_arr.forEach(p=>{
+    ctx.globalAlpha = p.life/50;
+    ctx.fillStyle=p.color;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,4,0,Math.PI*2);
+    ctx.fill();
+  });
+  ctx.globalAlpha=1;
+
+  // Draw player
+  drawPlayer();
+}
+
+function drawObstacle(ob){
+  const cfg=ob.cfg;
+  const x=ob.x-ob.w/2, y=ob.y;
+  if(cfg.collectible){
+    ctx.font=`${ob.h}px serif`;
+    ctx.textAlign='center';
+    ctx.textBaseline='top';
+    ctx.fillText('🥚',ob.x,y);
+    return;
+  }
+  if(cfg.powerup){
+    ctx.font=`${ob.h}px serif`;
+    ctx.textAlign='center';
+    ctx.textBaseline='top';
+    ctx.fillText('🪶',ob.x,y);
+    // Glow
+    ctx.shadowColor='#00BFFF'; ctx.shadowBlur=15;
+    ctx.font=`${ob.h}px serif`;
+    ctx.fillText('🪶',ob.x,y);
+    ctx.shadowBlur=0;
+    return;
+  }
+  // Obstacle body
+  ctx.fillStyle=cfg.color;
+  if(ob.type==='single_hay'){
+    ctx.fillStyle='#DAA520';
+    ctx.fillRect(x,y,ob.w,ob.h);
+    ctx.fillStyle='#B8860B';
+    ctx.fillRect(x+5,y+5,ob.w-10,ob.h-10);
+    ctx.strokeStyle='#8B6914'; ctx.lineWidth=2;
+    ctx.strokeRect(x,y,ob.w,ob.h);
+    ctx.font='28px serif'; ctx.textAlign='center';
+    ctx.fillText('🌾',ob.x,y+ob.h-28);
+  } else if(ob.type==='double_hay'){
+    ctx.fillStyle='#DAA520';
+    ctx.fillRect(x,y,ob.w,ob.h/2);
+    ctx.fillStyle='#B8860B';
+    ctx.fillRect(x,y+ob.h/2,ob.w,ob.h/2);
+    ctx.strokeStyle='#8B6914'; ctx.lineWidth=2;
+    ctx.strokeRect(x,y,ob.w,ob.h/2);
+    ctx.strokeRect(x,y+ob.h/2,ob.w,ob.h/2);
+    ctx.font='26px serif'; ctx.textAlign='center';
+    ctx.fillText('🌾',ob.x,y+ob.h/2-26);
+    ctx.fillText('🌾',ob.x,y+ob.h-26);
+  } else if(ob.type==='chicken_coop'){
+    ctx.fillStyle='#8B4513';
+    ctx.fillRect(x,y,ob.w,ob.h);
+    ctx.fillStyle='#A0522D';
+    ctx.fillRect(x+5,y+5,ob.w-10,ob.h*0.5);
+    // Roof
+    ctx.fillStyle='#DC143C';
+    ctx.beginPath();
+    ctx.moveTo(x-5,y); ctx.lineTo(x+ob.w+5,y); ctx.lineTo(x+ob.w/2,y-20);
+    ctx.closePath(); ctx.fill();
+    ctx.font='32px serif'; ctx.textAlign='center';
+    ctx.fillText('🐔',ob.x,y+ob.h-8);
+  } else if(ob.type==='mud'){
+    ctx.fillStyle='#5D4037';
+    ctx.beginPath();
+    ctx.ellipse(ob.x,y+ob.h/2,ob.w/2,ob.h/2,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle='#4E342E';
+    ctx.beginPath();
+    ctx.ellipse(ob.x-5,y+ob.h*0.4,ob.w*0.3,ob.h*0.3,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.font='20px serif'; ctx.textAlign='center';
+    ctx.fillText('💧',ob.x,y+ob.h);
+  } else if(ob.type==='wood_plank'){
+    ctx.fillStyle='#795548';
+    ctx.fillRect(x,y,ob.w,ob.h);
+    ctx.fillStyle='#6D4C41';
+    for(let i=0;i<3;i++) ctx.fillRect(x+i*20,y,2,ob.h);
+    ctx.strokeStyle='#5D4037'; ctx.lineWidth=2;
+    ctx.strokeRect(x,y,ob.w,ob.h);
+  }
+}
+
+function drawPlayer(){
+  const px=player.x, py=player.y, pw=player.width, ph=player.height;
+  const char=G.char||CHARACTERS[0];
+  const costume=G.costume||COSTUMES[0];
+
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(px,getGroundY()+5,pw*0.5,8,0,0,Math.PI*2);
+  ctx.fill();
+
+  if(G.powerup==='rocket'){
+    // Riding chicken
+    ctx.font=`${ph*0.7}px serif`;
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText('🐔',px,py);
+    ctx.font=`${ph*0.55}px serif`;
+    ctx.fillText(char.emoji,px+pw*0.1,py-ph*0.4);
+    // Speed lines
+    ctx.strokeStyle='rgba(255,150,0,0.6)'; ctx.lineWidth=2;
+    for(let i=0;i<3;i++){
+      ctx.beginPath(); ctx.moveTo(px-pw-20+i*8,py-ph*0.4-i*5); ctx.lineTo(px-pw-50+i*8,py-ph*0.4-i*5); ctx.stroke();
+    }
+  } else if(G.powerup==='wing'){
+    // Flying with chicken
+    const bob = Math.sin(G.frame*0.1)*5;
+    ctx.font=`${ph*0.65}px serif`;
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText('🪶',px-pw*0.8,py+bob);
+    ctx.fillText('🪶',px+pw*0.8,py+bob);
+    ctx.font=`${ph*0.6}px serif`;
+    ctx.fillText('🐔',px,py+bob);
+    ctx.font=`${ph*0.5}px serif`;
+    ctx.fillText(char.emoji,px,py-ph*0.3+bob);
+  } else {
+    // Normal running fox
+    const legOff = Math.sin(G.frame*0.3)*5;
+    // Body
+    ctx.fillStyle = char.color||'#FF6600';
+    ctx.beginPath();
+    ctx.ellipse(px,py-ph*0.35,pw*0.35,ph*0.3,0,0,Math.PI*2);
+    ctx.fill();
+    // Head
+    ctx.beginPath();
+    ctx.ellipse(px+pw*0.1,py-ph*0.65,pw*0.25,pw*0.23,0.2,0,Math.PI*2);
+    ctx.fill();
+    // Ears
+    ctx.beginPath();
+    ctx.moveTo(px+pw*0.1,py-ph*0.82);
+    ctx.lineTo(px+pw*0.22,py-ph*0.95);
+    ctx.lineTo(px+pw*0.3,py-ph*0.78);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(px-pw*0.05,py-ph*0.82);
+    ctx.lineTo(px+pw*0.05,py-ph*0.95);
+    ctx.lineTo(px+pw*0.13,py-ph*0.78);
+    ctx.fill();
+    // Eyes
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.arc(px+pw*0.18,py-ph*0.68,3,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#FF3333';
+    ctx.beginPath(); ctx.arc(px+pw*0.22,py-ph*0.68,1.5,0,Math.PI*2); ctx.fill();
+    // Legs
+    ctx.strokeStyle=char.color||'#FF6600'; ctx.lineWidth=5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(px-pw*0.1,py-ph*0.12); ctx.lineTo(px-pw*0.2,py+legOff); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px+pw*0.1,py-ph*0.12); ctx.lineTo(px+pw*0.2,py-legOff); ctx.stroke();
+    // Tail
+    ctx.strokeStyle='#FF8800'; ctx.lineWidth=6;
+    ctx.beginPath();
+    ctx.moveTo(px-pw*0.25,py-ph*0.2);
+    ctx.quadraticCurveTo(px-pw*0.6,py-ph*0.45,px-pw*0.4,py-ph*0.65);
+    ctx.stroke();
+    ctx.fillStyle='#fff';
+    ctx.beginPath(); ctx.arc(px-pw*0.4,py-ph*0.65,5,0,Math.PI*2); ctx.fill();
+    // Chicken in hand
+    if(player.hasChicken){
+      ctx.font='22px serif'; ctx.textAlign='center';
+      ctx.fillText('🐔',px-pw*0.05,py-ph*0.1);
+    }
+    // Costume overlay
+    if(costume&&costume.id!=='none'){
+      ctx.font='26px serif'; ctx.textAlign='center';
+      ctx.fillText(costume.emoji,px+pw*0.1,py-ph*0.85);
+    }
+  }
+  ctx.textBaseline='alphabetic';
+}
+
+// ════════════════════════════════════════════════════════════
+//  GAME CONTROLS
+// ════════════════════════════════════════════════════════════
+function tapLeft(){
+  if(!gameRunning||G.isOver) return;
+  if(player.targetLane>0) { player.lane=player.targetLane-1; player.targetLane--; }
+  else { endGame(); } // Hit left wall
+}
+function tapRight(){
+  if(!gameRunning||G.isOver) return;
+  if(player.targetLane<2) { player.lane=player.targetLane+1; player.targetLane++; }
+  else { endGame(); } // Hit right wall
+}
+function tapJump(){
+  if(!gameRunning||G.isOver) return;
+  if(!player.isJumping && G.powerup!=='wing'){
+    player.velY=JUMP_FORCE; player.isJumping=true;
+  }
+}
+function tapRocket(){
+  if(!gameRunning||G.isOver) return;
+  if(G.rocketCooldown>0){ notify('🚀 Roket soğuyor!'); return; }
+  G.powerup='rocket';
+  G.powerupTimer=15*60;
+  G.rocketCooldown=30*60; // 30s cooldown
+  player.hasChicken=false;
+  notify('🐔💨 Tavuğa bindin! 15 saniye!');
+}
+
+// Keyboard
+document.addEventListener('keydown',e=>{
+  if(!gameRunning) return;
+  if(e.key==='ArrowLeft'||e.key==='a') tapLeft();
+  else if(e.key==='ArrowRight'||e.key==='d') tapRight();
+  else if(e.key==='ArrowUp'||e.key==='w'||e.key===' ') tapJump();
+  else if(e.key==='r'||e.key==='R') tapRocket();
+});
+
+// Touch swipe
+canvas.addEventListener('touchstart',e=>{
+  touchStartX=e.touches[0].clientX;
+  touchStartY=e.touches[0].clientY;
+},{passive:true});
+canvas.addEventListener('touchend',e=>{
+  if(!gameRunning) return;
+  const dx=e.changedTouches[0].clientX - touchStartX;
+  const dy=e.changedTouches[0].clientY - touchStartY;
+  if(Math.abs(dx)>Math.abs(dy)){
+    if(dx<-30) tapLeft(); else if(dx>30) tapRight();
+  } else {
+    if(dy<-30) tapJump();
+  }
+},{passive:true});
+
+// ════════════════════════════════════════════════════════════
+//  GAME FLOW
+// ════════════════════════════════════════════════════════════
+function startGame(){
+  if(!currentUser){ showScreen('login'); return; }
+  initGame();
+  showScreen('game');
+  gameRunning=true;
+  G.mudHits=0; updateMudBar();
+  document.getElementById('hudScore').textContent='0';
+  document.getElementById('hudEggs').textContent='0';
+  document.getElementById('hudPowerup').textContent='';
+  document.getElementById('btnRocket').classList.remove('cooldown');
+  if(gameLoopId) cancelAnimationFrame(gameLoopId);
+  gameLoop();
+}
+
+function gameLoop(){
+  if(!gameRunning) return;
+  updateGame();
+  renderGame();
+  gameLoopId = requestAnimationFrame(gameLoop);
+}
+
+async function endGame(){
+  if(G.isOver) return;
+  G.isOver=true; gameRunning=false;
+  cancelAnimationFrame(gameLoopId);
+
+  // Save score
+  try{
+    const r=await fetch(API+'/api/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:currentUser.username,score:G.score,eggs_collected:G.eggs})});
+    const d=await r.json();
+    if(d.success){ currentUser=d.user; updateMenuUI(); }
+  } catch(e){}
+
+  document.getElementById('goScore').textContent=G.score;
+  document.getElementById('goEggs').textContent=G.eggs;
+  document.getElementById('goHigh').textContent=currentUser.high_score;
+  document.getElementById('gameoverScreen').classList.remove('hidden');
+  document.getElementById('gameHUD').classList.add('hidden');
+}
+
+// ════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  showScreen('loadingScreen');
+  runLoading();
+});
+</script>
+</body>
+</html>
